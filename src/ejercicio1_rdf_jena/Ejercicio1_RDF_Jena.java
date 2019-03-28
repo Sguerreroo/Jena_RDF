@@ -12,10 +12,11 @@ import twitter4j.TwitterFactory;
 
 public class Ejercicio1_RDF_Jena {
     
-    private static final int TWEETS_PER_SEARCH = 190;
+    private static final int TWEETS_PER_SEARCH = 2;
     private static final int MAX_TWEETS_PER_SEARCH = 200;
     private static final List<Tweet> tweets = new ArrayList<>();
-    private final String class_ = "UniónDeportivaLasPalmas";
+    private static final String class_ = "UniónDeportivaLasPalmas";
+    private static final String hashtag = "#android";
 
     public static void main(String[] args) {
         LogCtl.setCmdLogging();
@@ -23,12 +24,13 @@ public class Ejercicio1_RDF_Jena {
         TweetModel tweetModel = new TweetModel();
         Twitter twitter = new TwitterFactory().getInstance();
         
-        tweetsSearch(twitter, "#nasa");
+        tweetsSearch(twitter, hashtag);
         
         for (Tweet tweet : tweets) {
             System.out.println(tweet);
             tweetModel.addResource(twitter, tweet);
         }
+        
         System.out.println("\n\n\n ----------------- TURTLE ----------------- \n\n");
         tweetModel.serialize();
 
@@ -41,15 +43,14 @@ public class Ejercicio1_RDF_Jena {
             List<Status> tweets_result = twitter.search(query).getTweets();
             System.out.println("Se han recuperado " + tweets_result.size() + " tweets");
             tweets_result.forEach((tweet) -> {
-                System.out.println(tweet.getLang());
-                System.out.println(get_lenguage(tweet.getLang()));
                 tweets.add(new Tweet(
                                      tweet.getId(),
                                      tweet.getInReplyToStatusId(),
                                      new User(tweet.getUser().getName(), tweet.getUser().getLocation()),
                                      new Language(tweet.getLang(), get_lenguage(tweet.getLang())),
                                      tweet.getText(),
-                                     "",
+                                     class_,
+                                     hashtag,
                                      tweet.getCreatedAt()));
             });
           
