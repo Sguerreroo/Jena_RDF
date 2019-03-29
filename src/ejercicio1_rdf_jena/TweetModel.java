@@ -10,6 +10,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.vocabulary.AS;
 import org.apache.jena.vocabulary.DC_11;
 import org.apache.jena.vocabulary.ORG;
 import org.apache.jena.vocabulary.RDF;
@@ -45,7 +46,7 @@ public class TweetModel {
         this.tweetCount = 1;
     }
     
-    public void addResource(Twitter twitter, Tweet tw) {
+    public Resource addResource(Twitter twitter, Tweet tw) {
         User user = tw.getUser();
         Language language_ = tw.getLanguage();
         
@@ -73,7 +74,23 @@ public class TweetModel {
         
         topic.addLiteral(VCARD.LABEL, tw.getClass_());
         
-        checkIfReply(twitter, tw);
+        Status tweetReply = checkIfReply(twitter, tw);
+        
+        if (tweetReply != null) {
+            Tweet new_tweet = new Tweet(
+                                    tweetReply.getId(),
+                                    -1,
+                                    new User(tweetReply.getUser().getName(), tweetReply.getUser().getLocation()),
+                                    new Language(tweetReply.getLang(), get_lenguage(tweetReply.getLang())),
+                                    tweetReply.getText(),
+                                    tw.getClass_(),
+                                    tw.getHashtag(),
+                                    tweetReply.getCreatedAt());
+            Resource replyToTweetResource = addResource(twitter, new_tweet);
+            tweet.addProperty(AS.inReplyTo, replyToTweetResource);
+        }
+
+        return tweet;
     }
     
     public void serializeTurtle() {
@@ -128,24 +145,17 @@ public class TweetModel {
         }
     }
 
-    private void checkIfReply(Twitter twitter, Tweet tw) {
+    private Status checkIfReply(Twitter twitter, Tweet tw) {
         final long replyToId = tw.getReplyToId();
+        Status new_tweet = null;
         if (replyToId != -1) {
             try {
-                Status new_tweet = twitter.showStatus(replyToId);
-                addResource(twitter, new Tweet(
-                                     new_tweet.getId(),
-                                     -1,
-                                     new User(new_tweet.getUser().getName(), new_tweet.getUser().getLocation()),
-                                     new Language(new_tweet.getLang(), get_lenguage(new_tweet.getLang())),
-                                     new_tweet.getText(),
-                                     tw.getClass_(),
-                                     tw.getHashtag(),
-                                     new_tweet.getCreatedAt()));
+                new_tweet = twitter.showStatus(replyToId);
             } catch (TwitterException e) {
                 System.err.print("Failed to search tweets: " + e.getMessage());
             }
         }
+        return new_tweet;
     }
     
     private static String get_lenguage(String iso3){
