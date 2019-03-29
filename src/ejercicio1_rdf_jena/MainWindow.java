@@ -37,7 +37,11 @@ public class MainWindow extends javax.swing.JFrame {
         outputFileOptionLabel = new javax.swing.JLabel();
         turtleRadioButton = new javax.swing.JRadioButton();
         xmlRadioButton = new javax.swing.JRadioButton();
-        jButton1 = new javax.swing.JButton();
+        exportButton = new javax.swing.JButton();
+        numberOfTweetsLabel = new javax.swing.JLabel();
+        numberOfTweetsTextField = new javax.swing.JTextField();
+        jSeparator3 = new javax.swing.JSeparator();
+        informationLabelMax200 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         searchTweetsButton = new javax.swing.JButton();
         resultsLabel = new javax.swing.JLabel();
@@ -46,7 +50,7 @@ public class MainWindow extends javax.swing.JFrame {
         tweetsResultTextArea = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(806, 725));
+        setPreferredSize(new java.awt.Dimension(850, 725));
         setResizable(false);
 
         hashtagLabel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
@@ -84,7 +88,22 @@ public class MainWindow extends javax.swing.JFrame {
         xmlRadioButton.setText("XML");
         xmlRadioButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jButton1.setText("Exportar");
+        exportButton.setText("Exportar");
+
+        numberOfTweetsLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        numberOfTweetsLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        numberOfTweetsLabel.setText("Número de tweets a descargar");
+        numberOfTweetsLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        numberOfTweetsTextField.setToolTipText("");
+        numberOfTweetsTextField.setName(""); // NOI18N
+        numberOfTweetsTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                numberOfTweetsTextFieldActionPerformed(evt);
+            }
+        });
+
+        informationLabelMax200.setText("(Máximo 200)");
 
         javax.swing.GroupLayout outputOptionsLayout = new javax.swing.GroupLayout(outputOptions);
         outputOptions.setLayout(outputOptionsLayout);
@@ -92,6 +111,11 @@ public class MainWindow extends javax.swing.JFrame {
             outputOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(outputOptionsLayout.createSequentialGroup()
                 .addGroup(outputOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(exportButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(outputOptionsLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(outputFileOptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jSeparator3)
                     .addGroup(outputOptionsLayout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addGroup(outputOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -100,9 +124,13 @@ public class MainWindow extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(outputOptionsLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(outputFileOptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE))
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(numberOfTweetsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE))
+                    .addComponent(numberOfTweetsTextField, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
+            .addGroup(outputOptionsLayout.createSequentialGroup()
+                .addGap(77, 77, 77)
+                .addComponent(informationLabelMax200)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         outputOptionsLayout.setVerticalGroup(
             outputOptionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -114,13 +142,26 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(xmlRadioButton)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(420, Short.MAX_VALUE))
+                .addComponent(exportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23)
+                .addComponent(numberOfTweetsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(informationLabelMax200)
+                .addGap(18, 18, 18)
+                .addComponent(numberOfTweetsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(210, Short.MAX_VALUE))
         );
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
         searchTweetsButton.setText("Buscar");
+        searchTweetsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchTweetsButtonActionPerformed(evt);
+            }
+        });
 
         resultsLabel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         resultsLabel.setText("Resultados:");
@@ -135,7 +176,7 @@ public class MainWindow extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(outputOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(outputOptions, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -154,7 +195,7 @@ public class MainWindow extends javax.swing.JFrame {
                             .addComponent(searchTweetsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(jSeparator2))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -203,6 +244,14 @@ public class MainWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_topicTextFieldActionPerformed
 
+    private void searchTweetsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTweetsButtonActionPerformed
+        
+    }//GEN-LAST:event_searchTweetsButtonActionPerformed
+
+    private void numberOfTweetsTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numberOfTweetsTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_numberOfTweetsTextFieldActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -239,12 +288,16 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton exportButton;
     private javax.swing.JLabel hashtagLabel;
     private javax.swing.JTextField hashtagTextField;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel informationLabelMax200;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JLabel numberOfTweetsLabel;
+    private javax.swing.JTextField numberOfTweetsTextField;
     private javax.swing.JLabel outputFileOptionLabel;
     private javax.swing.ButtonGroup outputFileTypeButtonGroup;
     private javax.swing.JPanel outputOptions;
