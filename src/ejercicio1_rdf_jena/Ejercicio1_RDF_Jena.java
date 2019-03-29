@@ -18,7 +18,7 @@ public class Ejercicio1_RDF_Jena {
     private static final String class_ = "UniónDeportivaLasPalmas";
     private static final String hashtag = "#android";
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         LogCtl.setCmdLogging();
         
         TweetModel tweetModel = new TweetModel();
@@ -34,7 +34,7 @@ public class Ejercicio1_RDF_Jena {
         System.out.println("\n\n\n ----------------- TURTLE ----------------- \n\n");
         tweetModel.serialize();
 
-    }
+    }*/
 
     private static void tweetsSearch(Twitter twitter, String hashtag) {
         try {
