@@ -55,20 +55,8 @@ public class MainWindow extends javax.swing.JFrame {
         hashtagLabel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         hashtagLabel.setText("Hashtag:");
 
-        hashtagTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                hashtagTextFieldActionPerformed(evt);
-            }
-        });
-
         topicLabel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         topicLabel.setText("Tema:");
-
-        topicTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                topicTextFieldActionPerformed(evt);
-            }
-        });
 
         outputOptions.setPreferredSize(new java.awt.Dimension(200, 677));
 
@@ -88,19 +76,20 @@ public class MainWindow extends javax.swing.JFrame {
         xmlRadioButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         exportButton.setText("Exportar");
+        exportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportButtonActionPerformed(evt);
+            }
+        });
 
         numberOfTweetsLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         numberOfTweetsLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         numberOfTweetsLabel.setText("Número de tweets a descargar");
         numberOfTweetsLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        numberOfTweetsTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         numberOfTweetsTextField.setToolTipText("");
         numberOfTweetsTextField.setName(""); // NOI18N
-        numberOfTweetsTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                numberOfTweetsTextFieldActionPerformed(evt);
-            }
-        });
 
         informationLabelMax200.setText("(Máximo 200)");
 
@@ -236,14 +225,6 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void hashtagTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hashtagTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_hashtagTextFieldActionPerformed
-
-    private void topicTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_topicTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_topicTextFieldActionPerformed
-
     private void searchTweetsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTweetsButtonActionPerformed
         try {
             final int numberOfTweets = Integer.parseInt(numberOfTweetsTextField.getText());
@@ -251,8 +232,6 @@ public class MainWindow extends javax.swing.JFrame {
             final String topic = topicTextField.getText();
             if (checkLimitOfTweets(numberOfTweets) && checkHashtag(hashtag) && checkTopic(topic))
                 searchTweets(hashtag, topic, numberOfTweets);
-            
-            
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null,
                                           "Debes introducir un número entero de tweets a descargar",
@@ -261,9 +240,14 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_searchTweetsButtonActionPerformed
 
-    private void numberOfTweetsTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numberOfTweetsTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_numberOfTweetsTextFieldActionPerformed
+    private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed
+        if (turtleRadioButton.isSelected()) tweetModel.serializeTurtle();
+        else if (xmlRadioButton.isSelected()) tweetModel.serializeXML();
+        else JOptionPane.showMessageDialog(null,
+                                          "Debes seleccionar un tipo de fichero para exportar",
+                                          "Exportación",
+                                          JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_exportButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -378,13 +362,11 @@ public class MainWindow extends javax.swing.JFrame {
                 tweetModel.addResource(twitter, tw);
             }
             tweetsResultTextArea.setText(tweetsResult);
-        } catch (TwitterException te) {
-            System.out.println("Failed to search tweets: " + te.getMessage());
+        } catch (TwitterException tE) {
             JOptionPane.showMessageDialog(null,
                                           "No se ha encontrado ningún tweet.",
                                           "Búsqueda",
                                           JOptionPane.INFORMATION_MESSAGE);            
-            //System.exit(-1);
         }
     }
     

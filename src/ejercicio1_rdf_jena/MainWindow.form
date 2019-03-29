@@ -120,9 +120,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="hashtagTextField">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hashtagTextFieldActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="topicLabel">
       <Properties>
@@ -133,9 +130,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="topicTextField">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="topicTextFieldActionPerformed"/>
-      </Events>
     </Component>
     <Container class="javax.swing.JPanel" name="outputOptions">
       <Properties>
@@ -253,6 +247,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Exportar"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportButtonActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="numberOfTweetsLabel">
           <Properties>
@@ -270,12 +267,10 @@
         </Component>
         <Component class="javax.swing.JTextField" name="numberOfTweetsTextField">
           <Properties>
+            <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="toolTipText" type="java.lang.String" value=""/>
             <Property name="name" type="java.lang.String" value="" noResource="true"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="numberOfTweetsTextFieldActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JSeparator" name="jSeparator3">
         </Component>

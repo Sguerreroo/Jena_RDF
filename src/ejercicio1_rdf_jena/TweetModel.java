@@ -1,6 +1,10 @@
 package ejercicio1_rdf_jena;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Locale;
+import javax.swing.JOptionPane;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -17,11 +21,11 @@ import twitter4j.TwitterException;
 
 public class TweetModel {
     private final Model model;
-    private final String tweetURI = "http://si2twitter.com/tweet";
-    private final String authorURI = "http://si2twitter.com/author";
-    private final String languageURI = "http://si2twitter.com/language";
-    private final String hashtagURI = "http://si2twitter.com/hashtag";
-    private final String topicURI = "http://si2twitter.com/topic";
+    private final String tweetURI = "http://si2twitter.com/tweet/";
+    private final String authorURI = "http://si2twitter.com/author/";
+    private final String languageURI = "http://si2twitter.com/language/";
+    private final String hashtagURI = "http://si2twitter.com/hashtag/";
+    private final String topicURI = "http://si2twitter.com/topic/";
     private int tweetCount;
 
     public TweetModel() {
@@ -36,6 +40,7 @@ public class TweetModel {
         model.setNsPrefix("vcard", "http://www.w3.org/2001/vcard-rdf/3.0#"); // label, nickname
         model.setNsPrefix("rss", "http://purl.org/rss/1.0/"); // text
         model.setNsPrefix("org", "http://www.w3.org/ns/org#"); // location
+        model.setNsPrefix("as", "http://www.w3.org/ns/org#"); // replyTo
         
         this.tweetCount = 1;
     }
@@ -44,11 +49,11 @@ public class TweetModel {
         User user = tw.getUser();
         Language language_ = tw.getLanguage();
         
-        Resource tweet = model.createResource(tweetURI + "_" + this.tweetCount++);
-        Resource author = model.createResource(authorURI + "_" + user.getName());
-        Resource language = model.createResource(languageURI + "_" + language_.getLabel());
-        Resource hashtag = model.createResource(hashtagURI + "_" + tw.getHashtag());
-        Resource topic = model.createResource(topicURI + "_" + tw.getClass_());
+        Resource tweet = model.createResource(tweetURI + this.tweetCount++);
+        Resource author = model.createResource(authorURI + user.getName());
+        Resource language = model.createResource(languageURI + language_.getLabel());
+        Resource hashtag = model.createResource(hashtagURI + tw.getHashtag());
+        Resource topic = model.createResource(topicURI + tw.getClass_());
         
         tweet.addProperty(DC_11.creator, author);
         tweet.addProperty(DC_11.language, language);
@@ -71,8 +76,56 @@ public class TweetModel {
         checkIfReply(twitter, tw);
     }
     
-    public void serialize() {
-        RDFDataMgr.write(System.out, model, Lang.TURTLE);
+    public void serializeTurtle() {
+        if (!model.isEmpty()) {
+            try {
+                File file = new File("example.ttl");
+                String path = file.getAbsolutePath();
+                FileOutputStream fOS = new FileOutputStream(file);
+                RDFDataMgr.write(fOS, model, Lang.TURTLE);
+                fOS.close();
+                JOptionPane.showMessageDialog(null,
+                                              "Su fichero de exportación ha sido creado correctamente en " + path,
+                                              "Exportación",
+                                              JOptionPane.PLAIN_MESSAGE);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null,
+                                              "Ha ocurrido un error con su fichero de exportación",
+                                              "Exportación",
+                                              JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null,
+                                              "Antes de exportar debe realizar alguna búsqueda",
+                                              "Exportación",
+                                              JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    public void serializeXML() {
+         if (!model.isEmpty()) {
+            try {
+                File file = new File("example.xml");
+                String path = file.getAbsolutePath();
+                FileOutputStream fOS = new FileOutputStream(file);
+                RDFDataMgr.write(fOS, model, Lang.RDFXML);
+                fOS.close();
+                JOptionPane.showMessageDialog(null,
+                                              "Su fichero de exportación ha sido creado correctamente en " + path,
+                                              "Exportación",
+                                              JOptionPane.PLAIN_MESSAGE);
+            }  catch (IOException e) {
+                JOptionPane.showMessageDialog(null,
+                                              "Ha ocurrido un error con su fichero de exportación",
+                                              "Exportación",
+                                              JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null,
+                                              "Antes de exportar debe realizar alguna búsqueda",
+                                              "Exportación",
+                                              JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     private void checkIfReply(Twitter twitter, Tweet tw) {
