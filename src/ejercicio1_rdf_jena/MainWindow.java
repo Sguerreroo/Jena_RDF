@@ -351,7 +351,7 @@ public class MainWindow extends javax.swing.JFrame {
             for (Status tweet : tweets_result) {
                 Tweet tw = new Tweet(tweet.getId(),
                                      tweet.getInReplyToStatusId(),
-                                     new User(tweet.getUser().getName(), tweet.getUser().getLocation()),
+                                     new User(tweet.getUser().getScreenName(), tweet.getUser().getLocation()),
                                      new Language(tweet.getLang(), get_lenguage(tweet.getLang())),
                                      tweet.getText(),
                                      topic,

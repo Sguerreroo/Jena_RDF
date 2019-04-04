@@ -7,7 +7,9 @@ import java.util.Locale;
 import javax.swing.JOptionPane;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.AS;
@@ -42,24 +44,30 @@ public class TweetModel {
         User user = tw.getUser();
         Language language_ = tw.getLanguage();
         
+        Property language_identifier =  ResourceFactory.createProperty(baseURI + language_.getId());
+        
         Resource tweet = model.createResource(baseURI + "tweet_" + this.tweetCount++);
         Resource author = model.createResource(baseURI + "user_" + user.getName().replace(" ", ""));
         Resource language = model.createResource(baseURI + "language_" + language_.getLabel());
         Resource hashtag = model.createResource(baseURI + tw.getHashtag().substring(1));
         Resource topic = model.createResource(baseURI + "topic_" + tw.getClass_());
         
-        tweet.addProperty(DC_11.creator, author);
-        tweet.addProperty(DC_11.language, language);
-        tweet.addProperty(DC_11.relation, hashtag);
-        tweet.addLiteral(DC_11.identifier, tw.getId());
-        tweet.addLiteral(DC_11.date, tw.getDate().toString());
-        tweet.addLiteral(RSS.textinput, tw.getText());
+        tweet.addProperty(DC_11.creator, author)
+             .addProperty(DC_11.relation, hashtag)
+             .addLiteral(DC_11.identifier, tw.getId())
+             .addLiteral(DC_11.date, tw.getDate().toString())
+             .addLiteral(RSS.textinput, tw.getText());
         
         author.addLiteral(VCARD.NICKNAME, user.getName());
-        author.addLiteral(ORG.location, user.getLocation());
         
-        language.addLiteral(DC_11.identifier, language_.getId());
-        language.addLiteral(VCARD.LABEL, language_.getLabel());
+        if (!user.getLocation().isEmpty())
+            author.addLiteral(ORG.location, user.getLocation());
+        
+        if (!language_.getLabel().isEmpty() && !language_.getLabel().equals(" ")) {
+            tweet.addProperty(DC_11.language, language);
+            language.addLiteral(language_identifier, language_.getId())
+                    .addLiteral(VCARD.LABEL, language_.getLabel());
+        }
         
         hashtag.addProperty(RDF.type, topic);
         
