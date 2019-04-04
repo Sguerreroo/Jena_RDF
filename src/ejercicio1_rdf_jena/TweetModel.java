@@ -22,26 +22,18 @@ import twitter4j.TwitterException;
 
 public class TweetModel {
     private final Model model;
-    private final String tweetURI = "http://si2twitter.com/tweet/";
-    private final String authorURI = "http://si2twitter.com/author/";
-    private final String languageURI = "http://si2twitter.com/language/";
-    private final String hashtagURI = "http://si2twitter.com/hashtag/";
-    private final String topicURI = "http://si2twitter.com/topic/";
+    private final String baseURI = "http://www.si2.com/si2/";
     private int tweetCount;
 
     public TweetModel() {
         this.model = ModelFactory.createDefaultModel();
         
-        model.setNsPrefix("tweet", this.tweetURI);
-        model.setNsPrefix("author", this.authorURI);
-        model.setNsPrefix("language", this.languageURI);
-        model.setNsPrefix("hashtag", this.hashtagURI);
-        model.setNsPrefix("topic", this.topicURI);
+        model.setNsPrefix("si2", this.baseURI);
         model.setNsPrefix("dce", "http://purl.org/dc/elements/1.1/"); //id, date, creator, language
         model.setNsPrefix("vcard", "http://www.w3.org/2001/vcard-rdf/3.0#"); // label, nickname
         model.setNsPrefix("rss", "http://purl.org/rss/1.0/"); // text
         model.setNsPrefix("org", "http://www.w3.org/ns/org#"); // location
-        model.setNsPrefix("as", "http://www.w3.org/ns/org#"); // replyTo
+        model.setNsPrefix("as", "http://www.w3.org/ns/activitystreams#"); // replyTo
         
         this.tweetCount = 1;
     }
@@ -50,11 +42,11 @@ public class TweetModel {
         User user = tw.getUser();
         Language language_ = tw.getLanguage();
         
-        Resource tweet = model.createResource(tweetURI + this.tweetCount++);
-        Resource author = model.createResource(authorURI + user.getName());
-        Resource language = model.createResource(languageURI + language_.getLabel());
-        Resource hashtag = model.createResource(hashtagURI + tw.getHashtag());
-        Resource topic = model.createResource(topicURI + tw.getClass_());
+        Resource tweet = model.createResource(baseURI + "tweet_" + this.tweetCount++);
+        Resource author = model.createResource(baseURI + "user_" + user.getName().replace(" ", ""));
+        Resource language = model.createResource(baseURI + "language_" + language_.getLabel());
+        Resource hashtag = model.createResource(baseURI + tw.getHashtag().substring(1));
+        Resource topic = model.createResource(baseURI + "topic_" + tw.getClass_());
         
         tweet.addProperty(DC_11.creator, author);
         tweet.addProperty(DC_11.language, language);
@@ -62,7 +54,6 @@ public class TweetModel {
         tweet.addLiteral(DC_11.identifier, tw.getId());
         tweet.addLiteral(DC_11.date, tw.getDate().toString());
         tweet.addLiteral(RSS.textinput, tw.getText());
-        
         
         author.addLiteral(VCARD.NICKNAME, user.getName());
         author.addLiteral(ORG.location, user.getLocation());
